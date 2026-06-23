@@ -1,7 +1,7 @@
 bookings.db
 .env
 *.log
-vendor/
+/vendor/
 node_modules/
 uploads/tmp/
 
