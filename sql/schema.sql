@@ -170,6 +170,9 @@ VALUES
    JSON_ARRAY('Hiking', 'Photography', 'Cave exploring with a guide'),
    'Rolling limestone hills near an underground river and caves.', '26%', '56%');
 
+-- Destination photos are bundled locally (see assets/img/destinations/).
+UPDATE destinations SET image_url = CONCAT('assets/img/destinations/', slug, '.jpg');
+
 INSERT INTO hotels
   (slug, name, accommodation_type, area, rating, reviews, price_per_night, image_path)
 VALUES

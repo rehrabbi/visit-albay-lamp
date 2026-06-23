@@ -11,22 +11,22 @@ $reviews = [
     [
         'name' => 'Sarah Reyes', 'origin' => 'Manila', 'dest' => 'Mayon Volcano',
         'quote' => 'Nothing prepared me for the actual scale of Mayon. The cone is even more perfect in person than in any photo. We woke up at 4am for sunrise and it was worth every second.',
-        'avatar' => 'https://commons.wikimedia.org/wiki/Special:FilePath/Sumlang%20Lake%20(Camalig,%20Albay;%2004-20-2023).jpg?width=200',
+        'avatar' => url('assets/img/destinations/sumlang.jpg'),
     ],
     [
         'name' => 'James Okoro', 'origin' => 'Cebu City', 'dest' => 'Cagsawa Ruins',
         'quote' => 'Standing by the belfry with Mayon looming behind it was one of the most cinematic moments of my life. Albay is quietly one of the best provinces in the Philippines.',
-        'avatar' => 'https://commons.wikimedia.org/wiki/Special:FilePath/Mt.Mayon%20with%20Cagsawa%20Ruins,%20Albay%20by%20Say%20Bernardo.jpg?width=200',
+        'avatar' => url('assets/img/scenery/cagsawa-mayon.jpg'),
     ],
     [
         'name' => 'Ana Villanueva', 'origin' => 'Singapore', 'dest' => 'Sumlang Lake',
         'quote' => 'We took a bamboo raft at golden hour and Mayon reflected perfectly in the still water. It felt unreal. Come in dry season, the clarity is something else.',
-        'avatar' => 'https://commons.wikimedia.org/wiki/Special:FilePath/Quitinday%20Green%20Hills%20south%20view%20(Camalig,%20Albay;%2004-22-2023).jpg?width=200',
+        'avatar' => url('assets/img/destinations/quitinday.jpg'),
     ],
 ];
 
-$extraHead = '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">';
-$extraScripts = '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>'
+$extraHead = '<link rel="stylesheet" href="' . h(url('assets/vendor/leaflet/leaflet.css')) . '">';
+$extraScripts = '<script src="' . h(url('assets/vendor/leaflet/leaflet.js')) . '"></script>'
     . '<script src="' . h(url('assets/js/modal.js')) . '?v=' . filemtime(__DIR__ . '/assets/js/modal.js') . '"></script>'
     . '<script src="' . h(url('assets/js/home.js')) . '?v=' . filemtime(__DIR__ . '/assets/js/home.js') . '"></script>';
 
@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
 <main>
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-title">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mayon%20Volcano%27s%20Crater.jpg?width=2000" alt="Mayon Volcano rising over Albay">
+    <img src="<?= h(url('assets/img/scenery/mayon-crater.jpg')) ?>" alt="Mayon Volcano rising over Albay">
     <div class="hero-content">
       <p class="eyebrow">Albay &middot; Bicol &middot; Philippines</p>
       <h1 id="hero-title">Find your<br>Albay.</h1>
@@ -115,7 +115,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="tile-grid" style="padding:0;max-width:1120px;">
       <a class="tile" href="<?= h(url('experiences.php')) ?>">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Sumlang%20Lake%20(Camalig,%20Albay;%2004-20-2023).jpg?width=900" alt="Lakeside nature in Albay">
+        <img src="<?= h(url('assets/img/destinations/sumlang.jpg')) ?>" alt="Lakeside nature in Albay">
         <div class="tile-text">
           <h3>Nature</h3>
           <p>Lakes, reflections, and the perfect cone.</p>
@@ -123,7 +123,7 @@ require __DIR__ . '/includes/header.php';
         </div>
       </a>
       <a class="tile" href="<?= h(url('experiences.php')) ?>">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mt.Mayon%20with%20Cagsawa%20Ruins,%20Albay%20by%20Say%20Bernardo.jpg?width=900" alt="Heritage ruins in Albay">
+        <img src="<?= h(url('assets/img/scenery/cagsawa-mayon.jpg')) ?>" alt="Heritage ruins in Albay">
         <div class="tile-text">
           <h3>Heritage</h3>
           <p>Volcanic-stone churches and a belfry that outlived an eruption.</p>
@@ -131,7 +131,7 @@ require __DIR__ . '/includes/header.php';
         </div>
       </a>
       <a class="tile" href="<?= h(url('experiences.php')) ?>">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Quitinday%20Green%20Hills%20south%20view%20(Camalig,%20Albay;%2004-22-2023).jpg?width=900" alt="Green hills adventure in Albay">
+        <img src="<?= h(url('assets/img/destinations/quitinday.jpg')) ?>" alt="Green hills adventure in Albay">
         <div class="tile-text">
           <h3>Adventure</h3>
           <p>Ziplines, viewdecks, and rolling green hills.</p>
@@ -152,19 +152,19 @@ require __DIR__ . '/includes/header.php';
       </div>
       <div class="food-grid">
         <article class="food-card">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bicol_express.jpg?width=600" alt="Bicol Express" onerror="this.style.display='none'">
+          <img src="<?= h(url('assets/img/scenery/bicol-express.jpg')) ?>" alt="Bicol Express" onerror="this.style.display='none'">
           <div class="cap"><strong>Bicol Express</strong><p>Pork in coconut milk with siling labuyo &mdash; the dish that put Bicol on the map.</p></div>
         </article>
         <article class="food-card">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Laing.jpg?width=600" alt="Laing" onerror="this.style.display='none'">
+          <img src="<?= h(url('assets/img/scenery/laing.png')) ?>" alt="Laing" onerror="this.style.display='none'">
           <div class="cap"><strong>Laing</strong><p>Dried taro leaves simmered in thick coconut milk. Earthy, creamy, and deeply Bicolano.</p></div>
         </article>
         <article class="food-card">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Pinangat.jpg?width=600" alt="Pinangat" onerror="this.style.display='none'">
+          <img src="<?= h(url('assets/img/scenery/pinangat.jpg')) ?>" alt="Pinangat" onerror="this.style.display='none'">
           <div class="cap"><strong>Pinangat</strong><p>Taro and pork wrapped in coconut fronds &mdash; a slow, smoky Camalig specialty.</p></div>
         </article>
         <article class="food-card">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Pili_nut_(Canarium_ovatum).jpg?width=600" alt="Pili nuts" onerror="this.style.display='none'">
+          <img src="<?= h(url('assets/img/scenery/pili.jpg')) ?>" alt="Pili nuts" onerror="this.style.display='none'">
           <div class="cap"><strong>Pili Nuts</strong><p>Grown only in Bicol &mdash; buttery and rich. The souvenir everyone brings home.</p></div>
         </article>
       </div>
@@ -179,23 +179,23 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="gallery-grid">
       <div class="gallery-item tall">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mayon%20Volcano%27s%20Crater.jpg?width=900" alt="Mayon Volcano">
+        <img src="<?= h(url('assets/img/scenery/mayon-crater.jpg')) ?>" alt="Mayon Volcano">
         <span>Mayon Volcano</span>
       </div>
       <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mt.Mayon%20with%20Cagsawa%20Ruins,%20Albay%20by%20Say%20Bernardo.jpg?width=900" alt="Cagsawa Ruins">
+        <img src="<?= h(url('assets/img/scenery/cagsawa-mayon.jpg')) ?>" alt="Cagsawa Ruins">
         <span>Cagsawa Ruins</span>
       </div>
       <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Sumlang%20Lake%20(Camalig,%20Albay;%2004-20-2023).jpg?width=900" alt="Sumlang Lake">
+        <img src="<?= h(url('assets/img/destinations/sumlang.jpg')) ?>" alt="Sumlang Lake">
         <span>Sumlang Lake</span>
       </div>
       <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The_Daraga_Church_in_Albay_Province.jpg?width=900" alt="Daraga Church">
+        <img src="<?= h(url('assets/img/destinations/daraga.jpg')) ?>" alt="Daraga Church">
         <span>Daraga Church</span>
       </div>
       <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Quitinday%20Green%20Hills%20south%20view%20(Camalig,%20Albay;%2004-22-2023).jpg?width=900" alt="Quitinday Green Hills">
+        <img src="<?= h(url('assets/img/destinations/quitinday.jpg')) ?>" alt="Quitinday Green Hills">
         <span>Quitinday Hills</span>
       </div>
     </div>

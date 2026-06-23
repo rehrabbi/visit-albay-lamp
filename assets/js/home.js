@@ -5,8 +5,8 @@
     return;
   }
 
-  // Make Leaflet's default marker icons resolve from the CDN.
-  L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.9.4/dist/images/';
+  // Resolve Leaflet's default marker icons from the local bundled copy.
+  L.Icon.Default.imagePath = window.location.pathname.replace(/\/[^\/]*$/, '/') + 'assets/vendor/leaflet/images/';
 
   var destinations = [
     { slug: 'mayon', name: 'Mayon Volcano', lat: 13.2543, lng: 123.6857 },
