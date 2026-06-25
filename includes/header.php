@@ -20,7 +20,7 @@ $user = current_user($pdo);
     <a class="<?= $active === 'home' ? 'is-active' : '' ?>" href="<?= h(url('index.php')) ?>">Home<?php if ($active === 'home'): ?><?php endif; ?></a>
     <a class="<?= $active === 'destinations' ? 'is-active' : '' ?>" href="<?= h(url('destinations.php')) ?>">Destinations<?php if ($active === 'destinations'): ?></span><?php endif; ?></a>
     <a class="<?= $active === 'experience' ? 'is-active' : '' ?>" href="<?= h(url('experiences.php')) ?>">Experience<?php if ($active === 'experience'): ?></span><?php endif; ?></a>
-    <a class="<?= $active === 'plan' ? 'is-active' : '' ?>" href="<?= h(url('plan.php')) ?>">Plan<?php if ($active === 'plan'): ?></span><?php endif; ?></a>
+    <a class="<?= $active === 'plan' ? 'is-active' : '' ?>" href="<?= h(url('plan.php')) ?>">Book<?php if ($active === 'plan'): ?></span><?php endif; ?></a>
     <?php if ($user && $user['role'] === 'admin'): ?>
       <a class="<?= $active === 'admin' ? 'is-active' : '' ?>" href="<?= h(url('admin.php')) ?>">Admin<?php if ($active === 'admin'): ?></span><?php endif; ?></a>
     <?php endif; ?>
