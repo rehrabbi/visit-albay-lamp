@@ -90,6 +90,7 @@ CREATE TABLE bookings (
   status ENUM('active', 'cancelled') NOT NULL DEFAULT 'active',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_status (status),
   CONSTRAINT fk_bookings_user
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON DELETE CASCADE,
@@ -107,6 +108,7 @@ CREATE TABLE edit_requests (
   seen TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   resolved_at TIMESTAMP NULL DEFAULT NULL,
+  INDEX idx_status (status),
   CONSTRAINT fk_edit_requests_booking
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
     ON DELETE CASCADE

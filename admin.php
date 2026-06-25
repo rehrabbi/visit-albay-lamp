@@ -6,25 +6,33 @@ require_admin($pdo);
 $pageTitle = 'Admin Dashboard - Visit Albay';
 $active = 'admin';
 $destinations = all_destinations($pdo);
+
+// Create a lookup dictionary to map destination IDs to human-readable names.
+// This is required for formatting the 'diff' view in pending edit requests.
 $destinationMap = [];
 foreach ($destinations as $destination) {
     $destinationMap[(int) $destination['id']] = $destination['name'];
 }
 
+// Create a lookup dictionary to map hotel IDs to human-readable names.
 $hotelMap = [];
 foreach ($pdo->query('SELECT id, name FROM hotels')->fetchAll() as $hotelRow) {
     $hotelMap[(int) $hotelRow['id']] = $hotelRow['name'];
 }
 
+// Fetch the 50 most recent bookings with their associated owner, destination, and hotel names.
+// LIMIT 50 is enforced to prevent server memory overload and DOM lag as the database scales.
 $bookings = $pdo->query(
     'SELECT b.*, u.username AS owner, d.name AS destination_name, h.name AS hotel_name
      FROM bookings b
      JOIN users u ON u.id = b.user_id
      JOIN destinations d ON d.id = b.destination_id
      JOIN hotels h ON h.id = b.hotel_id
-     ORDER BY b.id DESC'
+     ORDER BY b.id DESC
+     LIMIT 50'
 )->fetchAll();
 
+// Fetch all pending edit requests with their original booking context.
 $editRequests = $pdo->query(
     "SELECT e.*, b.reference_code, b.full_name, b.destination_id, b.hotel_id, b.check_in_date,
             b.nights, b.guests, b.rooms, b.payment_method, b.email, b.phone, b.address,
@@ -36,6 +44,7 @@ $editRequests = $pdo->query(
      ORDER BY e.id DESC"
 )->fetchAll();
 
+// Aggregate user statistics, calculating total bookings per user.
 $users = $pdo->query(
     'SELECT u.id, u.username, u.role, u.created_at, COUNT(b.id) AS bookings
      FROM users u
@@ -44,6 +53,10 @@ $users = $pdo->query(
      ORDER BY u.id ASC'
 )->fetchAll();
 
+/**
+ * Formats raw database values into human-readable strings for the Admin UI.
+ * Specifically converts foreign keys (destination_id, hotel_id) into their actual text names.
+ */
 function admin_format_value(string $key, $value, array $destinationMap, array $hotelMap): string
 {
     if ($value === null || $value === '') {
@@ -70,7 +83,7 @@ require __DIR__ . '/includes/header.php';
     </div>
   </div>
 
-  <div class="tabs" role="tablist" aria-label="Admin sections">
+  <div class="tabs" role="tablist" aria-label="Admin sections" style="margin-top: 2rem; margin-bottom: 2rem;">
     <button class="button is-active" type="button" data-tab-target="bookings">Bookings <?= count($bookings) ?></button>
     <button class="button" type="button" data-tab-target="edits">Pending edits <?= count($editRequests) ?></button>
     <button class="button" type="button" data-tab-target="users">Users <?= count($users) ?></button>
