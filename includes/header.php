@@ -17,12 +17,12 @@ $user = current_user($pdo);
 <header class="site-header<?= !empty($heroHeader) ? ' site-header-hero' : '' ?>">
   <a class="brand" href="<?= h(url('index.php')) ?>"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.9 5.6a1.3 1.3 0 0 1 2.2 0l7.2 13.4a1 1 0 0 1-.9 1.5H4.6a1 1 0 0 1-.9-1.5Z" fill="currentColor"/></svg>Visit Albay</a>
   <nav class="nav-links" aria-label="Primary navigation">
-    <a class="<?= $active === 'home' ? 'is-active' : '' ?>" href="<?= h(url('index.php')) ?>">Home<?php if ($active === 'home'): ?><span class="dot"></span><?php endif; ?></a>
-    <a class="<?= $active === 'destinations' ? 'is-active' : '' ?>" href="<?= h(url('destinations.php')) ?>">Destinations<?php if ($active === 'destinations'): ?><span class="dot"></span><?php endif; ?></a>
-    <a class="<?= $active === 'experience' ? 'is-active' : '' ?>" href="<?= h(url('experiences.php')) ?>">Experience<?php if ($active === 'experience'): ?><span class="dot"></span><?php endif; ?></a>
-    <a class="<?= $active === 'plan' ? 'is-active' : '' ?>" href="<?= h(url('plan.php')) ?>">Plan<?php if ($active === 'plan'): ?><span class="dot"></span><?php endif; ?></a>
+    <a class="<?= $active === 'home' ? 'is-active' : '' ?>" href="<?= h(url('index.php')) ?>">Home<?php if ($active === 'home'): ?><?php endif; ?></a>
+    <a class="<?= $active === 'destinations' ? 'is-active' : '' ?>" href="<?= h(url('destinations.php')) ?>">Destinations<?php if ($active === 'destinations'): ?></span><?php endif; ?></a>
+    <a class="<?= $active === 'experience' ? 'is-active' : '' ?>" href="<?= h(url('experiences.php')) ?>">Experience<?php if ($active === 'experience'): ?></span><?php endif; ?></a>
+    <a class="<?= $active === 'plan' ? 'is-active' : '' ?>" href="<?= h(url('plan.php')) ?>">Plan<?php if ($active === 'plan'): ?></span><?php endif; ?></a>
     <?php if ($user && $user['role'] === 'admin'): ?>
-      <a class="<?= $active === 'admin' ? 'is-active' : '' ?>" href="<?= h(url('admin.php')) ?>">Admin<?php if ($active === 'admin'): ?><span class="dot"></span><?php endif; ?></a>
+      <a class="<?= $active === 'admin' ? 'is-active' : '' ?>" href="<?= h(url('admin.php')) ?>">Admin<?php if ($active === 'admin'): ?></span><?php endif; ?></a>
     <?php endif; ?>
   </nav>
   <div class="account-actions">
