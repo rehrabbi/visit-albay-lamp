@@ -566,7 +566,7 @@ input::-webkit-inner-spin-button {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--cream);
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
@@ -576,14 +576,18 @@ table {
 th,
 td {
   padding: 12px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--blue-light);
   text-align: left;
   vertical-align: top;
 }
 
+thead {
+  color: var(--blue-light);
+}
+
 th {
-  color: #8a7a66;
-  background: var(--soft);
+  color: var(--brand-dark);
+  background: var(--yellowlite);
   font-size: 12px;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -2256,8 +2260,8 @@ tr:last-child td {
 }
 
 .booking-total {
-  background: var(--ink);
-  color: var(--cream);
+  background: var(--accent);
+  color: var(--paper);
   border: 0;
 }
 
@@ -2273,7 +2277,7 @@ tr:last-child td {
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: #ffd3a0;
+  color: var(--cyan-light);
 }
 
 .booking-total strong {
@@ -2282,7 +2286,7 @@ tr:last-child td {
 }
 
 .booking-total>span:last-child {
-  color: #c9bcab;
+  color: var(--cyan-light);
   font-size: 13px;
 }
 
