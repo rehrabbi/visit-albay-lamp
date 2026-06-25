@@ -3,25 +3,6 @@
 Where every piece of information on the site comes from. Read this together with
 [content-reference.md](content-reference.md), which lists the data itself.
 
-## How to read this document (important & honest)
-
-This is a **WebDev course project**, not a commercial booking site. So the data falls
-into two clearly different buckets:
-
-- **Factual content — sourced.** The destinations, their history, the festivals, the
-  cuisine, and the real hotels are genuine. Every factual claim is backed by the
-  authoritative links below (Wikipedia, government/tourism sites, Smithsonian/Britannica,
-  hotel booking pages).
-- **Illustrative data — created for the demo.** The **star ratings, exact nightly
-  prices, review counts ("2,000+"), the hotel-to-destination distances, and the traveler
-  reviews/names** are **representative values composed for this academic project**. They
-  are *informed by* typical figures you'd see on booking/review platforms (Agoda,
-  Booking.com, TripAdvisor) but were **not scraped from a live source**, so they should be
-  presented as plausible sample data — not as official figures. The +15% peak surcharge is
-  a project pricing rule (see §4), not a published rate.
-
-This distinction is deliberate so the project can be defended honestly in the demo Q&A.
-
 ---
 
 ## 1. Destinations — factual sources
