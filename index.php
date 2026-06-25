@@ -33,18 +33,22 @@ $extraScripts = '<script src="' . h(url('assets/vendor/leaflet/leaflet.js')) . '
 require __DIR__ . '/includes/header.php';
 ?>
 <main>
+  <?php require_once __DIR__ . '/includes/filters.php'; ?>
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-title">
-    <img src="<?= h(url('assets/img/scenery/mayon-crater.jpg')) ?>" alt="Mayon Volcano rising over Albay">
+    
+    <h1 id="hero-title" class="hero-title-bg">Discover <br><span class="albay-pop">Albay</span></h1>
+
+    <img src="<?= h(url('assets/img/scenery/MayonMask.png')) ?>" alt="Mayon Volcano" class="mountain-layer">
+    
     <div class="hero-content">
-      <p class="eyebrow">Albay &middot; Bicol &middot; Philippines</p>
-      <h1 id="hero-title">Find your<br>Albay.</h1>
       <p>One province, every kind of day &mdash; an active volcano, centuries-old ruins, quiet lakes, and rolling green hills.</p>
       <div class="hero-cta">
         <a class="hero-btn" href="<?= h(url('plan.php')) ?>">Plan Your Visit <span aria-hidden="true">&rarr;</span></a>
         <a class="hero-link" href="<?= h(url('destinations.php')) ?>"><span class="hero-circle" aria-hidden="true">&rarr;</span>Explore destinations</a>
       </div>
     </div>
+    
     <div class="hero-stats">
       <div class="stat"><div class="n">2,462 m</div><div class="l">Summit</div></div>
       <div class="stat"><div class="n">6 sites</div><div class="l">Signature stops</div></div>
