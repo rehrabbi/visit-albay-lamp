@@ -13,7 +13,26 @@
     var toggle = event.target.closest("[data-toggle-edit]");
     if (toggle) {
       var target = document.getElementById(toggle.dataset.toggleEdit);
-      if (target) target.classList.toggle("is-open");
+      if (target) {
+        var card = target.closest(".booking-card");
+        var willOpen = !target.classList.contains("is-open");
+        if (card) {
+          // One request form at a time: close any open form in this card and
+          // hide the action buttons so only the chosen field shows.
+          card.querySelectorAll(".edit-form.is-open").forEach(function (f) {
+            f.classList.remove("is-open");
+          });
+          var actions = card.querySelector(".card-actions");
+          if (willOpen) {
+            target.classList.add("is-open");
+            if (actions) actions.classList.add("is-hidden");
+          } else if (actions) {
+            actions.classList.remove("is-hidden");
+          }
+        } else {
+          target.classList.toggle("is-open");
+        }
+      }
     }
 
     var tab = event.target.closest("[data-tab-target]");
@@ -21,6 +40,12 @@
       showTab(tab.dataset.tabTarget);
     }
   });
+
+  // Keep the admin on the same tab after a server redirect (?tab=...).
+  var initialTab = new URLSearchParams(window.location.search).get("tab");
+  if (initialTab && document.querySelector('[data-tab-target="' + initialTab + '"]')) {
+    showTab(initialTab);
+  }
 
   // Destinations category filter (client-side show/hide).
   var filterBar = document.querySelector("[data-filter-bar]");

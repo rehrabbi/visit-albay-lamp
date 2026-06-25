@@ -27,6 +27,16 @@
   }
 
   var stayList = document.querySelector(".stay-list");
+  var peakNote = document.querySelector("[data-peak-note]");
+  var seasons = window.VA_PEAK_SEASONS || [];
+
+  function peakPct(value) {
+    if (!value) return 0;
+    for (var i = 0; i < seasons.length; i++) {
+      if (value >= seasons[i].start && value <= seasons[i].end) return seasons[i].pct;
+    }
+    return 0;
+  }
 
   function updateHotels() {
     var destinationId = destination.value;
@@ -68,9 +78,15 @@
     var countNights = Math.max(1, numberValue(nights, 1));
     var countRooms = Math.max(1, numberValue(rooms, 1));
     var price = parseFloat(hotel.dataset.price || "0");
-    var total = price * countNights * countRooms;
+    var pct = peakPct(checkIn.value);
+    var total = price * countNights * countRooms * (1 + pct / 100);
     totalText.textContent = "₱" + total.toLocaleString("en-PH", { maximumFractionDigits: 0 });
     totalBox.classList.add("is-visible");
+
+    if (peakNote) {
+      peakNote.textContent = pct > 0 ? "Peak season +" + pct + "% applied" : "";
+      peakNote.hidden = pct === 0;
+    }
 
     if (checkIn.value) {
       var date = new Date(checkIn.value + "T00:00:00");
