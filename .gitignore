@@ -10,3 +10,5 @@ uploads/tmp/
 Thumbs.db
 .vscode/
 .idea/
+
+*.zip
