@@ -20,9 +20,16 @@ foreach ($pdo->query('SELECT id, name FROM hotels')->fetchAll() as $hotelRow) {
   $hotelMap[(int) $hotelRow['id']] = $hotelRow['name'];
 }
 
-// Fetch the 50 most recent bookings with their associated owner, destination, and hotel names.
-// LIMIT 50 is enforced to prevent server memory overload and DOM lag as the database scales.
+// Bookings load 50 at a time to keep memory and the DOM bounded as the database
+// scales. "Show more" raises the limit via the ?show query parameter; the value is
+// clamped to a 50-row step and never below 50.
+$bookingsTotal = (int) $pdo->query('SELECT COUNT(*) FROM bookings')->fetchColumn();
+$bookingsStep = 50;
+$bookingsLimit = max($bookingsStep, (int) ($_GET['show'] ?? $bookingsStep));
+$bookingsLimit = (int) (ceil($bookingsLimit / $bookingsStep) * $bookingsStep);
+
 $bookings = $pdo->query(
+<<<<<<< HEAD
   'SELECT b.*, u.username AS owner, d.name AS destination_name, h.name AS hotel_name
    FROM bookings b
    JOIN users u ON u.id = b.user_id
@@ -30,7 +37,17 @@ $bookings = $pdo->query(
    JOIN hotels h ON h.id = b.hotel_id
    ORDER BY b.id DESC
    LIMIT 50'
+=======
+    'SELECT b.*, u.username AS owner, d.name AS destination_name, h.name AS hotel_name
+     FROM bookings b
+     JOIN users u ON u.id = b.user_id
+     JOIN destinations d ON d.id = b.destination_id
+     JOIN hotels h ON h.id = b.hotel_id
+     ORDER BY b.id DESC
+     LIMIT ' . $bookingsLimit
+>>>>>>> bfbdfaead23dae55c0798ea4010696311c48ce2f
 )->fetchAll();
+$bookingsHasMore = $bookingsTotal > count($bookings);
 
 // Fetch all pending edit requests with their original booking context.
 $editRequests = $pdo->query(
@@ -84,7 +101,7 @@ require __DIR__ . '/includes/header.php';
   </div>
 
   <div class="tabs" role="tablist" aria-label="Admin sections" style="margin-top: 2rem; margin-bottom: 2rem;">
-    <button class="button is-active" type="button" data-tab-target="bookings">Bookings <?= count($bookings) ?></button>
+    <button class="button is-active" type="button" data-tab-target="bookings">Bookings <?= $bookingsTotal ?></button>
     <button class="button" type="button" data-tab-target="edits">Pending edits <?= count($editRequests) ?></button>
     <button class="button" type="button" data-tab-target="users">Users <?= count($users) ?></button>
   </div>
@@ -163,6 +180,12 @@ require __DIR__ . '/includes/header.php';
         </tbody>
       </table>
     </div>
+    <?php if ($bookingsHasMore): ?>
+      <div class="load-more">
+        <p class="meta">Showing <?= count($bookings) ?> of <?= $bookingsTotal ?> bookings</p>
+        <a class="button button-ghost" href="<?= h(url('admin.php?show=' . ($bookingsLimit + $bookingsStep))) ?>#bookings">Show more</a>
+      </div>
+    <?php endif; ?>
   </section>
 
   <section class="tab-panel" data-tab-panel="edits">
