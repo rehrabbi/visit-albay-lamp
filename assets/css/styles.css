@@ -7,9 +7,10 @@
   --accent: #0064FA;       
   --blue-light: #91BEFF;   
   --cyan-light: #E1F5FF;   
-  --green: #5AA55A;        
+  --green: #1e771e;        
   --accent-dark: #003566;
   --yellow: #f6d110;
+  --yellowlite: #fff9c7;
 
   --muted: #003566;
   --soft: #f4f2e0;
@@ -211,7 +212,7 @@ a {
 .albay-pop {
   color: var(--yellow); 
   font-weight: 900; 
-  font-size: 40vh;
+  font-size: 20vw;
   margin-left: 17vw;
 }
 
@@ -233,7 +234,7 @@ a {
   bottom: max(20px, 15vh);
   width: clamp(280px, 30vw, 450px); 
   padding: 0;
-  z-index: 99; 
+  z-index: 3; 
 }
 
 .hero p {
@@ -433,11 +434,25 @@ textarea:focus {
   border-color: var(--accent);
 }
 
+select {
+  padding: 12px 20px 12px 13px;
+}
+
+textarea{
+  resize: vertical;
+}
+
 .field-error {
   display: block;
   margin-top: 6px;
   color: #c0492b;
   font-size: 13px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .stepper {
@@ -453,7 +468,7 @@ textarea:focus {
 .stepper button {
   height: 44px;
   border: 0;
-  background: var(--soft);
+  background: var(--yellowlite);
   font-size: 20px;
   cursor: pointer;
 }
@@ -2075,12 +2090,12 @@ tr:last-child td {
   padding: 14px 10px;
   text-align: center;
   border: 1.5px solid rgba(36, 28, 20, .1);
-  background: #f4f0eb;
+  background: var(cream);
 }
 
 .weather-cell.peak {
-  background: #fbefe0;
-  border-color: var(--accent);
+  background: var(--yellowlite);
+  border-color: var(--yellow);
 }
 
 .weather-cell .mo {
@@ -2102,22 +2117,22 @@ tr:last-child td {
 
 .weather-cell .temp {
   font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .weather-cell .note {
   font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
-  letter-spacing: .04em;
+  font-size: 10px;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: #a09585;
+  color: #395845;
   margin-top: 6px;
   line-height: 1.3;
 }
 
 .weather-cell.peak .note {
-  color: var(--accent);
+  color: var(--green);
 }
 
 .weather-legend {
@@ -2143,12 +2158,12 @@ tr:last-child td {
 }
 
 .weather-legend .sw.peak {
-  background: #fbefe0;
-  border: 1.5px solid var(--accent);
+  background: var(--yellowlite);
+  border: 1.5px solid var(--yellow);
 }
 
 .weather-legend .sw.off {
-  background: #f4f0eb;
+  background: var(--cream);
   border: 1.5px solid rgba(36, 28, 20, .1);
 }
 
