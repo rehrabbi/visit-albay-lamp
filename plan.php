@@ -59,7 +59,7 @@ require __DIR__ . '/includes/header.php';
         </label>
         <label>
           Check-in date
-          <input name="check_in_date" type="date" required>
+          <input name="check_in_date" type="date" data-calendar required>
         </label>
         <label>
           Guests
@@ -177,6 +177,7 @@ require __DIR__ . '/includes/header.php';
     <aside class="booking-total" data-total-box>
       <span class="label">Estimated stay total</span>
       <strong data-total-text>₱0</strong>
+      <span class="booking-total-peak" data-peak-note hidden></span>
       <span>Check-out: <span data-checkout-text>Choose a check-in date</span></span>
     </aside>
 
@@ -186,6 +187,8 @@ require __DIR__ . '/includes/header.php';
     </div>
   </form>
 </main>
+<script>window.VA_PEAK_SEASONS = <?= json_encode(peak_seasons_for_js($pdo), JSON_UNESCAPED_SLASHES) ?>;</script>
+<script src="<?= h(url('assets/js/calendar.js')) ?>?v=<?= filemtime(__DIR__ . '/assets/js/calendar.js') ?>"></script>
 <script src="<?= h(url('assets/js/booking.js')) ?>?v=<?= filemtime(__DIR__ . '/assets/js/booking.js') ?>"></script>
 <script src="<?= h(url('assets/js/validation.js')) ?>?v=<?= filemtime(__DIR__ . '/assets/js/validation.js') ?>"></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

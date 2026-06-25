@@ -31,9 +31,9 @@ $bands = [
 $weather = [
     ['mo' => 'Jan', 'sky' => 'Clear', 'temp' => '26°C', 'peak' => true, 'note' => 'Peak season'],
     ['mo' => 'Feb', 'sky' => 'Sunny', 'temp' => '27°C', 'peak' => true, 'note' => 'Peak season'],
-    ['mo' => 'Mar', 'sky' => 'Sunny', 'temp' => '29°C', 'peak' => true, 'note' => 'Peak season'],
-    ['mo' => 'Apr', 'sky' => 'Hot', 'temp' => '31°C', 'peak' => true, 'note' => 'Magayon Festival'],
-    ['mo' => 'May', 'sky' => 'Mixed', 'temp' => '30°C', 'peak' => false, 'note' => 'Shoulder'],
+    ['mo' => 'Mar', 'sky' => 'Sunny', 'temp' => '29°C', 'peak' => true, 'note' => 'Dry season'],
+    ['mo' => 'Apr', 'sky' => 'Hot', 'temp' => '31°C', 'peak' => true, 'note' => 'Holy Week'],
+    ['mo' => 'May', 'sky' => 'Mixed', 'temp' => '30°C', 'peak' => true, 'note' => 'Magayon Festival'],
     ['mo' => 'Jun', 'sky' => 'Rainy', 'temp' => '28°C', 'peak' => false, 'note' => 'Wet season starts'],
     ['mo' => 'Jul', 'sky' => 'Storms', 'temp' => '27°C', 'peak' => false, 'note' => 'Typhoon risk'],
     ['mo' => 'Aug', 'sky' => 'Storms', 'temp' => '27°C', 'peak' => false, 'note' => 'Typhoon risk'],

@@ -14,10 +14,13 @@ foreach ($destinations as $destination) {
     $destinationMap[(int) $destination['id']] = $destination['name'];
 }
 
-// Create a lookup dictionary to map hotel IDs to human-readable names.
+// Create a lookup dictionary to map hotel IDs to human-readable names,
+// plus a price lookup used to project the new total on edit requests.
 $hotelMap = [];
-foreach ($pdo->query('SELECT id, name FROM hotels')->fetchAll() as $hotelRow) {
+$hotelPriceMap = [];
+foreach ($pdo->query('SELECT id, name, price_per_night FROM hotels')->fetchAll() as $hotelRow) {
     $hotelMap[(int) $hotelRow['id']] = $hotelRow['name'];
+    $hotelPriceMap[(int) $hotelRow['id']] = (float) $hotelRow['price_per_night'];
 }
 
 // Bookings load 50 at a time to keep memory and the DOM bounded as the database
@@ -42,13 +45,26 @@ $bookingsHasMore = $bookingsTotal > count($bookings);
 // Fetch all pending edit requests with their original booking context.
 $editRequests = $pdo->query(
     "SELECT e.*, b.reference_code, b.full_name, b.destination_id, b.hotel_id, b.check_in_date,
-            b.nights, b.guests, b.rooms, b.payment_method, b.email, b.phone, b.address,
+            b.nights, b.guests, b.rooms, b.hotel_total, b.payment_method, b.email, b.phone, b.address,
             b.special_request, u.username AS owner
      FROM edit_requests e
      JOIN bookings b ON b.id = e.booking_id
      JOIN users u ON u.id = b.user_id
      WHERE e.status = 'pending'
      ORDER BY e.id DESC"
+)->fetchAll();
+
+// Fetch all pending cancellation requests with their booking context.
+$cancelRequests = $pdo->query(
+    "SELECT c.*, b.reference_code, b.full_name, b.hotel_total, b.check_in_date,
+            d.name AS destination_name, h.name AS hotel_name, u.username AS owner
+     FROM cancellation_requests c
+     JOIN bookings b ON b.id = c.booking_id
+     JOIN destinations d ON d.id = b.destination_id
+     JOIN hotels h ON h.id = b.hotel_id
+     JOIN users u ON u.id = b.user_id
+     WHERE c.status = 'pending'
+     ORDER BY c.id DESC"
 )->fetchAll();
 
 // Aggregate user statistics, calculating total bookings per user.
@@ -93,6 +109,7 @@ require __DIR__ . '/includes/header.php';
   <div class="tabs" role="tablist" aria-label="Admin sections" style="margin-top: 2rem; margin-bottom: 2rem;">
     <button class="button is-active" type="button" data-tab-target="bookings">Bookings <?= $bookingsTotal ?></button>
     <button class="button" type="button" data-tab-target="edits">Pending edits <?= count($editRequests) ?></button>
+    <button class="button" type="button" data-tab-target="cancellations">Cancellations <?= count($cancelRequests) ?></button>
     <button class="button" type="button" data-tab-target="users">Users <?= count($users) ?></button>
   </div>
 
@@ -182,7 +199,22 @@ require __DIR__ . '/includes/header.php';
     <?php else: ?>
       <div class="booking-list">
         <?php foreach ($editRequests as $request): ?>
-          <?php $proposed = json_list($request['proposed']); ?>
+          <?php
+          $proposed = json_list($request['proposed']);
+          // Project the new total when the stay, nights, rooms, or check-in change.
+          $touchesPrice = array_key_exists('hotel_id', $proposed)
+              || array_key_exists('nights', $proposed)
+              || array_key_exists('rooms', $proposed)
+              || array_key_exists('check_in_date', $proposed);
+          $proposedTotal = null;
+          if ($touchesPrice) {
+              $pHotel = (int) ($proposed['hotel_id'] ?? $request['hotel_id']);
+              $pNights = max(1, (int) ($proposed['nights'] ?? $request['nights']));
+              $pRooms = max(1, (int) ($proposed['rooms'] ?? $request['rooms']));
+              $pCheckIn = (string) ($proposed['check_in_date'] ?? $request['check_in_date']);
+              $proposedTotal = compute_booking_total($pdo, (float) ($hotelPriceMap[$pHotel] ?? 0), $pNights, $pRooms, $pCheckIn);
+          }
+          ?>
           <article class="card booking-card">
             <div class="section-head">
               <div>
@@ -215,6 +247,59 @@ require __DIR__ . '/includes/header.php';
                   </span>
                 </div>
               <?php endforeach; ?>
+              <?php if ($proposedTotal !== null): ?>
+                <div class="diff-row diff-row-total">
+                  <span class="diff-field">Total</span>
+                  <span class="diff-values">
+                    <span class="diff-from"><?= h(money($request['hotel_total'])) ?></span>
+                    <span class="diff-arrow" aria-hidden="true">&rarr;</span>
+                    <span class="diff-to"><?= h(money($proposedTotal)) ?></span>
+                  </span>
+                </div>
+              <?php endif; ?>
+            </div>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </section>
+
+  <section class="tab-panel" data-tab-panel="cancellations">
+    <?php if (!$cancelRequests): ?>
+      <div class="panel empty-state">No pending cancellation requests.</div>
+    <?php else: ?>
+      <div class="booking-list">
+        <?php foreach ($cancelRequests as $request): ?>
+          <article class="card booking-card">
+            <div class="section-head">
+              <div>
+                <span class="booking-ref"><?= h($request['reference_code']) ?></span>
+                <h2>Requested by <?= h($request['owner']) ?></h2>
+              </div>
+              <div class="inline-actions">
+                <form action="<?= h(url('actions/admin_cancel.php')) ?>" method="post">
+                  <?= csrf_field() ?>
+                  <input type="hidden" name="cancellation_request_id" value="<?= (int) $request['id'] ?>">
+                  <input type="hidden" name="action" value="approve">
+                  <button class="button button-danger" type="submit">Approve cancellation</button>
+                </form>
+                <form action="<?= h(url('actions/admin_cancel.php')) ?>" method="post">
+                  <?= csrf_field() ?>
+                  <input type="hidden" name="cancellation_request_id" value="<?= (int) $request['id'] ?>">
+                  <input type="hidden" name="action" value="reject">
+                  <button class="button button-ok" type="submit">Keep booking</button>
+                </form>
+              </div>
+            </div>
+            <div class="grid grid-3">
+              <div><strong>Traveler</strong><br><?= h($request['full_name']) ?></div>
+              <div><strong>Destination</strong><br><?= h($request['destination_name']) ?></div>
+              <div><strong>Stay</strong><br><?= h($request['hotel_name']) ?></div>
+              <div><strong>Check-in</strong><br><?= h($request['check_in_date']) ?></div>
+              <div><strong>Total</strong><br><?= money($request['hotel_total']) ?></div>
+            </div>
+            <div class="notice notice-warn cancel-reason">
+              <strong>Reason:</strong> <?= h($request['reason']) ?>
             </div>
           </article>
         <?php endforeach; ?>

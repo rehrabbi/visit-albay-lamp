@@ -21,15 +21,13 @@ $user = current_user($pdo);
     <a class="<?= $active === 'destinations' ? 'is-active' : '' ?>" href="<?= h(url('destinations.php')) ?>">Destinations<?php if ($active === 'destinations'): ?><span class="dot"></span><?php endif; ?></a>
     <a class="<?= $active === 'experience' ? 'is-active' : '' ?>" href="<?= h(url('experiences.php')) ?>">Experience<?php if ($active === 'experience'): ?><span class="dot"></span><?php endif; ?></a>
     <a class="<?= $active === 'plan' ? 'is-active' : '' ?>" href="<?= h(url('plan.php')) ?>">Plan<?php if ($active === 'plan'): ?><span class="dot"></span><?php endif; ?></a>
-    <?php if ($user): ?>
-      <a class="<?= $active === 'bookings' ? 'is-active' : '' ?>" href="<?= h(url('my-bookings.php')) ?>">My bookings<?php if ($active === 'bookings'): ?><span class="dot"></span><?php endif; ?></a>
-      <?php if ($user['role'] === 'admin'): ?>
-        <a class="<?= $active === 'admin' ? 'is-active' : '' ?>" href="<?= h(url('admin.php')) ?>">Admin<?php if ($active === 'admin'): ?><span class="dot"></span><?php endif; ?></a>
-      <?php endif; ?>
+    <?php if ($user && $user['role'] === 'admin'): ?>
+      <a class="<?= $active === 'admin' ? 'is-active' : '' ?>" href="<?= h(url('admin.php')) ?>">Admin<?php if ($active === 'admin'): ?><span class="dot"></span><?php endif; ?></a>
     <?php endif; ?>
   </nav>
   <div class="account-actions">
     <?php if ($user): ?>
+      <a class="account-bookings<?= $active === 'bookings' ? ' is-active' : '' ?>" href="<?= h(url('my-bookings.php')) ?>">My bookings</a>
       <span class="account-name">Hi, <strong><?= h($user['username']) ?></strong></span>
       <form action="<?= h(url('logout.php')) ?>" method="post">
         <?= csrf_field() ?>
