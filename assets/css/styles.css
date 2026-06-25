@@ -2,6 +2,7 @@
   --ink: #1f2428;
   --paper: #eaf3ff;
   --cream: #f1f8fb;
+  --creamlite: #f1f8fbad;
   
   --accent: #0064FA;       
   --blue-light: #91BEFF;   
@@ -45,7 +46,7 @@ a {
   align-items: center;
   gap: 20px;
   padding: 16px max(20px, 5vw);
-  background: rgba(251, 247, 241, .92);
+  background: var(--creamlite);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(14px);
 }
@@ -239,89 +240,30 @@ a {
   color: var(--muted);
   font-size: clamp(14px, 1.5vw, 18px);
   line-height: 1.5;
-  color: rgba(255, 255, 255, .86);
-  height: 100vh;
-  min-height: 660px;
-  max-width: 450px;
-  font-size: clamp(16px, 1.4vw, 19px);
-  margin: 0 0 32px;
 }
 
 .hero .eyebrow {
   color: var(--accent-dark);
   font-size: clamp(12px, 2vw, 18px);
   font-style: bold;
-  letter-spacing: .2em;
-  margin-bottom: 22px;
-}
-
-.hero-scroll {
-  color: var(--muted);
-}
-
-.hero img {
-  object-position: center 30%;
-}
-
-
-.hero h1 {
-  max-width: none;
-  font-size: clamp(54px, 10vw, 10vw);
-  line-height: .92;
-  letter-spacing: -.04em;
-  margin: 0 0 22px;
-}
-
-.hero-cta {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  flex-wrap: wrap;
-}
-
-.hero-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #fff;
-  color: var(--ink);
-  font-size: 15px;
-  font-weight: 700;
-  padding: 15px 28px;
-  border-radius: 999px;
-  text-decoration: none;
-  box-shadow: 0 18px 36px -20px rgba(0, 0, 0, .7);
 }
 
 .hero-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   color: var(--ink);
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
 }
 
 .hero-circle {
-  flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, .55);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   border-color: var(--line);
 }
 
 .hero-stats {
-  gap: 46px;
-  bottom: 34px;
-  padding-top: 18px;
-  z-index: 4;
   color: var(--ink);
   border-top: 1px solid var(--line);
+
+}
+
+.hero-scroll {
+  color: var(--muted);
 }
 
 h1,
@@ -349,6 +291,12 @@ h3 {
 
 p {
   line-height: 1.65;
+}
+
+.hero p {
+  max-width: 580px;
+  color: rgba(255, 255, 255, .86);
+  font-size: 18px;
 }
 
 .section {
@@ -1334,7 +1282,7 @@ tr:last-child td {
 }
 
 .site-header-hero.is-solid {
-  background: rgba(251, 247, 241, .92);
+  background: var(--paper);
   backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
   color: var(--ink);
@@ -1419,6 +1367,87 @@ tr:last-child td {
   .hero-stats {
     gap: 26px;
   }
+}
+
+.hero {
+  height: 100vh;
+  min-height: 660px;
+}
+
+.hero img {
+  object-position: center 30%;
+}
+
+
+.hero .eyebrow {
+  letter-spacing: .2em;
+  margin-bottom: 22px;
+}
+
+.hero h1 {
+  max-width: none;
+  font-size: clamp(54px, 10vw, 10vw);
+  line-height: .92;
+  letter-spacing: -.04em;
+  margin: 0 0 22px;
+}
+
+.hero p {
+  max-width: 450px;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .88);
+  margin: 0 0 32px;
+}
+
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 15px 28px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 18px 36px -20px rgba(0, 0, 0, .7);
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hero-circle {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, .55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-stats {
+  gap: 46px;
+  bottom: 34px;
+  border-top: 1px solid rgba(255, 255, 255, .22);
+  padding-top: 18px;
+  z-index: 4;
 }
 
 .brand {
@@ -2006,7 +2035,7 @@ tr:last-child td {
 .exp-places span {
   font-size: 14px;
   font-weight: 600;
-  background: #f4eadf;
+  background: var(--cyan-light);
   padding: 9px 16px;
   border-radius: 999px;
 }
@@ -3050,14 +3079,6 @@ h1 {
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;800&display=swap');
-
-:root {
-  --brand-yellow: #EAB308; 
-  --brand-blue: #2563EB;   
-  --brand-dark: #111827;   
-  --brand-gray: #4B5563;   
-}
 .glass-background {
   min-height: 100vh;
   display: flex;
@@ -3256,6 +3277,3 @@ h1 {
     padding: 1.5rem;
   }
 }
-
-
-
