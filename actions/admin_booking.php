@@ -52,6 +52,20 @@ if (!find_destination($pdo, $destinationId)) {
 
 $checkOut = add_days($checkIn, (int) $booking['nights']);
 
+// Collision guard: don't let an admin edit push these dates onto another
+// active booking for the same stay + destination (excluding this booking).
+$overlap = $pdo->prepare(
+    "SELECT COUNT(*) FROM bookings
+     WHERE hotel_id = ? AND destination_id = ? AND status = 'active'
+       AND id <> ?
+       AND check_in_date < ? AND check_out_date > ?"
+);
+$overlap->execute([(int) $booking['hotel_id'], $destinationId, $bookingId, $checkOut, $checkIn]);
+if ($overlap->fetchColumn() > 0) {
+    set_flash('error', 'Those dates clash with another active booking for this stay. Choose different dates.');
+    redirect('admin.php');
+}
+
 $stmt = $pdo->prepare(
     'UPDATE bookings
      SET full_name = ?, email = ?, phone = ?, destination_id = ?, check_in_date = ?, check_out_date = ?, guests = ?
