@@ -3050,6 +3050,14 @@ h1 {
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;800&display=swap');
+
+:root {
+  --brand-yellow: #EAB308; 
+  --brand-blue: #2563EB;   
+  --brand-dark: #111827;   
+  --brand-gray: #4B5563;   
+}
 .glass-background {
   min-height: 100vh;
   display: flex;
@@ -3248,3 +3256,6 @@ h1 {
     padding: 1.5rem;
   }
 }
+
+
+
