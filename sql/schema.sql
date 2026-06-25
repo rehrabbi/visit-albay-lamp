@@ -5,11 +5,13 @@ CREATE DATABASE IF NOT EXISTS visit_albay
 USE visit_albay;
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS cancellation_requests;
 DROP TABLE IF EXISTS edit_requests;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS hotel_destinations;
 DROP TABLE IF EXISTS hotels;
 DROP TABLE IF EXISTS destinations;
+DROP TABLE IF EXISTS peak_seasons;
 DROP TABLE IF EXISTS users;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -19,6 +21,14 @@ CREATE TABLE users (
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE peak_seasons (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  label VARCHAR(120) NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  surcharge_pct DECIMAL(5,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB;
 
 CREATE TABLE destinations (
@@ -110,6 +120,20 @@ CREATE TABLE edit_requests (
   resolved_at TIMESTAMP NULL DEFAULT NULL,
   INDEX idx_status (status),
   CONSTRAINT fk_edit_requests_booking
+    FOREIGN KEY (booking_id) REFERENCES bookings(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE cancellation_requests (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  booking_id INT UNSIGNED NOT NULL,
+  reason TEXT NOT NULL,
+  status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+  seen TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  resolved_at TIMESTAMP NULL DEFAULT NULL,
+  INDEX idx_status (status),
+  CONSTRAINT fk_cancellation_requests_booking
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
     ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -221,3 +245,13 @@ SET hd.distance_km = CASE
   WHEN d.town LIKE '%Camalig%' THEN 17.0
   ELSE 13.0
 END;
+
+-- Peak tourist windows in Albay carry a +15% surcharge on the stay total.
+-- Date ranges are explicit (covering 2026-2027) so they are easy to adjust.
+INSERT INTO peak_seasons (label, start_date, end_date, surcharge_pct) VALUES
+  ('Magayon Festival 2026', '2026-05-01', '2026-05-31', 15.00),
+  ('Holy Week 2026',        '2026-03-29', '2026-04-05', 15.00),
+  ('Christmas & New Year 2026', '2026-12-15', '2027-01-05', 15.00),
+  ('Magayon Festival 2027', '2027-05-01', '2027-05-31', 15.00),
+  ('Holy Week 2027',        '2027-03-21', '2027-03-28', 15.00),
+  ('Christmas & New Year 2027', '2027-12-15', '2028-01-05', 15.00);

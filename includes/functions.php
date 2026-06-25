@@ -135,6 +135,58 @@ function add_days(string $date, int $days): string
     return (new DateTimeImmutable($date))->modify('+' . $days . ' days')->format('Y-m-d');
 }
 
+function all_peak_seasons(PDO $pdo): array
+{
+    static $cache = null;
+    if ($cache === null) {
+        $cache = $pdo->query(
+            'SELECT label, start_date, end_date, surcharge_pct FROM peak_seasons ORDER BY start_date ASC'
+        )->fetchAll();
+    }
+    return $cache;
+}
+
+function peak_season_for(PDO $pdo, string $checkIn): ?array
+{
+    $checkIn = substr(trim($checkIn), 0, 10);
+    if ($checkIn === '') {
+        return null;
+    }
+    foreach (all_peak_seasons($pdo) as $season) {
+        if ($checkIn >= $season['start_date'] && $checkIn <= $season['end_date']) {
+            return $season;
+        }
+    }
+    return null;
+}
+
+function peak_multiplier(PDO $pdo, string $checkIn): float
+{
+    $season = peak_season_for($pdo, $checkIn);
+    return $season ? 1 + ((float) $season['surcharge_pct'] / 100) : 1.0;
+}
+
+// Single source of truth for a stay total: base x nights x rooms, plus any
+// peak-season surcharge tied to the check-in date.
+function compute_booking_total(PDO $pdo, float $price, int $nights, int $rooms, string $checkIn): float
+{
+    return round($price * $nights * $rooms * peak_multiplier($pdo, $checkIn), 2);
+}
+
+// Peak ranges shaped for the client-side live total (booking + edit forms).
+function peak_seasons_for_js(PDO $pdo): array
+{
+    $out = [];
+    foreach (all_peak_seasons($pdo) as $season) {
+        $out[] = [
+            'start' => $season['start_date'],
+            'end' => $season['end_date'],
+            'pct' => (float) $season['surcharge_pct'],
+        ];
+    }
+    return $out;
+}
+
 function safe_payment_details(array $input): string
 {
     $method = $input['payment_method'] ?? '';

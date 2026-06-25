@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/app.php';
 require_admin($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('admin.php');
+    redirect('admin.php?tab=edits');
 }
 
 verify_csrf($_POST['csrf_token'] ?? null);
@@ -14,7 +14,7 @@ $action = (string) ($_POST['action'] ?? '');
 
 if (!in_array($action, ['approve', 'reject'], true)) {
     set_flash('error', 'Unknown edit action.');
-    redirect('admin.php');
+    redirect('admin.php?tab=edits');
 }
 
 $stmt = $pdo->prepare(
@@ -28,7 +28,7 @@ $request = $stmt->fetch();
 
 if (!$request) {
     set_flash('error', 'Pending edit request not found.');
-    redirect('admin.php');
+    redirect('admin.php?tab=edits');
 }
 
 $pdo->beginTransaction();
@@ -75,7 +75,7 @@ if ($action === 'approve') {
             $sets[] = 'check_in_date = ?';   $values[] = $checkIn;
             $sets[] = 'check_out_date = ?';  $values[] = add_days($checkIn, $nights);
             $sets[] = 'hotel_price = ?';     $values[] = $price;
-            $sets[] = 'hotel_total = ?';     $values[] = $price * $nights * $rooms;
+            $sets[] = 'hotel_total = ?';     $values[] = compute_booking_total($pdo, $price, $nights, $rooms, $checkIn);
         }
     }
 
@@ -93,4 +93,4 @@ $stmt->execute([$action === 'approve' ? 'approved' : 'rejected', $requestId]);
 $pdo->commit();
 
 set_flash('success', $action === 'approve' ? 'Edit approved and applied.' : 'Edit rejected.');
-redirect('admin.php');
+redirect('admin.php?tab=edits');

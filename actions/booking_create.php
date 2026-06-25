@@ -23,9 +23,23 @@ $hotel = find_hotel($pdo, $hotelId);
 $nights = (int) $_POST['nights'];
 $rooms = (int) $_POST['rooms'];
 $price = (float) $hotel['price_per_night'];
-$total = $price * $nights * $rooms;
 $checkIn = (string) $_POST['check_in_date'];
+$total = compute_booking_total($pdo, $price, $nights, $rooms, $checkIn);
 $checkOut = add_days($checkIn, $nights);
+
+// Collision guard: refuse dates that overlap an existing active booking for the
+// same stay + destination (existing.start < new.end AND existing.end > new.start).
+$overlap = $pdo->prepare(
+    "SELECT COUNT(*) FROM bookings
+     WHERE hotel_id = ? AND destination_id = ? AND status = 'active'
+       AND check_in_date < ? AND check_out_date > ?"
+);
+$overlap->execute([$hotelId, $destinationId, $checkOut, $checkIn]);
+if ($overlap->fetchColumn() > 0) {
+    set_flash('error', 'Those dates are already booked for this stay. Please pick different dates.');
+    redirect('plan.php');
+}
+
 $reference = booking_reference($pdo);
 
 $stmt = $pdo->prepare(
