@@ -2,6 +2,7 @@
   --ink: #1f2428;
   --paper: #eaf3ff;
   --cream: #f1f8fb;
+  --creamlite: #f1f8fbad;
   
   --accent: #0064FA;       
   --blue-light: #91BEFF;   
@@ -11,7 +12,7 @@
   --yellow: #f6d110;
 
   --muted: #003566;
-  --soft: #f4eae0;
+  --soft: #f4f2e0;
   --line: rgba(36, 28, 20, .14);
   --shadow: 0 24px 60px -42px rgba(36, 28, 20, .55);
 }
@@ -45,7 +46,7 @@ a {
   align-items: center;
   gap: 20px;
   padding: 16px max(20px, 5vw);
-  background: rgba(251, 247, 241, .92);
+  background: var(--creamlite);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(14px);
 }
@@ -142,8 +143,8 @@ a {
 }
 
 .button-primary {
-  color: #fff;
-  background: var(--accent);
+  color: var(--ink);
+  background: var(--yellow);
   box-shadow: 0 16px 34px -22px rgba(204, 122, 51, .95);
 }
 
@@ -1281,7 +1282,7 @@ tr:last-child td {
 }
 
 .site-header-hero.is-solid {
-  background: rgba(251, 247, 241, .92);
+  background: var(--paper);
   backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
   color: var(--ink);
@@ -1908,8 +1909,8 @@ tr:last-child td {
 }
 
 .dest-book {
-  background: var(--accent-dark);
-  color: var(--cream);
+  background: var(--yellow);
+  color: var(--ink);
   font-size: 14px;
   font-weight: 600;
   padding: 11px 20px;
@@ -2034,7 +2035,7 @@ tr:last-child td {
 .exp-places span {
   font-size: 14px;
   font-weight: 600;
-  background: #f4eadf;
+  background: var(--cyan-light);
   padding: 9px 16px;
   border-radius: 999px;
 }
@@ -2248,8 +2249,6 @@ tr:last-child td {
   font-size: 13px;
 }
 
-/* ===================== PIXEL-MATCH CORRECTIONS ===================== */
-/* Headline weight + section rhythm to match the original */
 h1 {
   font-weight: 800;
 }
@@ -3065,29 +3064,21 @@ h1 {
 
 /* Calendar: dates already booked for the chosen stay + destination */
 .cal-day.is-booked {
-  color: #b9b1a4;
+  color: var(--blue-light);
   text-decoration: line-through;
-  background: #f3eee7;
+  background: var(--cream);
   cursor: not-allowed;
 }
 
 .cal-day.is-booked:hover {
-  background: #f3eee7;
+  background: var(--cream);
 }
 
 .legend-booked {
-  background: #f3eee7;
+  background: var(--cream);
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;800&display=swap');
-
-:root {
-  --brand-yellow: #EAB308; 
-  --brand-blue: #2563EB;   
-  --brand-dark: #111827;   
-  --brand-gray: #4B5563;   
-}
 .glass-background {
   min-height: 100vh;
   display: flex;
@@ -3286,6 +3277,3 @@ h1 {
     padding: 1.5rem;
   }
 }
-
-
-
