@@ -123,7 +123,7 @@ require __DIR__ . '/includes/header.php';
         <label class="wide">
           Payment method
           <select name="payment_method" required>
-            <option value="">Choose payment</option>
+            <option value="" disabled selected hidden>Choose payment</option>
             <option value="GCash">GCash</option>
             <option value="Credit / Debit Card">Credit / Debit Card</option>
             <option value="Cash on Arrival">Cash on Arrival</option>
