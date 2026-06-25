@@ -73,7 +73,10 @@
     totalBox.classList.add("is-visible");
 
     if (checkIn.value) {
-      var date = new Date(checkIn.value + "T00:00:00");
+      // PARSE RANGE VALUE
+      var startDateStr = checkIn.value.includes(' to ') ? checkIn.value.split(' to ')[0] : checkIn.value;
+      var date = new Date(startDateStr + "T00:00:00");
+     
       date.setDate(date.getDate() + countNights);
       var pad = function (n) { return String(n).padStart(2, "0"); };
       checkoutText.textContent = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
@@ -112,4 +115,54 @@
 
   updateHotels();
   updatePayment();
+
+  // FLATPICKR LOGIC & API CHECK
+  var alertBox = document.getElementById("booking-alert");
+  
+  var fp = flatpickr("#date-picker", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function(selectedDates) {
+      alertBox.style.display = "none"; // Hide alert if user changes dates
+      if (selectedDates.length === 2) {
+        var diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
+        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        nights.value = diffDays;
+        updateTotal();
+      }
+    }
+  });
+
+  async function fetchAvailability() {
+    var hotel = selectedHotel();
+    if (!hotel || !destination.value) return;
+    
+    var destId = destination.value;
+    var hotelId = hotel.value;
+
+    try {
+      var response = await fetch(`/visit-albay/actions/get_availability.php?hotel_id=${hotelId}&destination_id=${destId}`);
+      var takenRanges = await response.json();
+      fp.set('disable', takenRanges);
+      
+      // Check if current selection violates new bounds
+      if (checkIn.value) {
+          var startDateStr = checkIn.value.includes(' to ') ? checkIn.value.split(' to ')[0] : checkIn.value;
+          var isTaken = takenRanges.some(range => startDateStr >= range.from && startDateStr <= range.to);
+          if (isTaken) {
+              alertBox.style.display = "block";
+              fp.clear();
+          }
+      }
+    } catch (e) {
+      console.error("Could not fetch availability", e);
+    }
+  }
+
+  destination.addEventListener("change", fetchAvailability);
+  hotelInputs.forEach(function (input) {
+    input.addEventListener("change", fetchAvailability);
+  });
+
 })();

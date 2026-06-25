@@ -21,6 +21,18 @@ if (!$booking) {
     redirect('my-bookings.php');
 }
 
+// Splir range string into check-in and check-out dates
+$rawDateInput = trim((string) ($_POST['check_in_date'] ?? ''));
+if (strpos($rawDateInput, ' to ') !== false) {
+    $dateParts = explode(' to ', $rawDateInput);
+    $_POST['check_in_date'] = $dateParts[0];
+    $_POST['check_out_date'] = $dateParts[1];
+} elseif ($rawDateInput !== '') {
+    // Fallback if they somehow bypassed the calendar
+    $_POST['check_out_date'] = add_days($rawDateInput, max(1, (int)($_POST['nights'] ?? 1)));
+}
+
+
 $fields = [
     'full_name' => 'string',
     'email' => 'email',
@@ -29,6 +41,7 @@ $fields = [
     'destination_id' => 'int',
     'hotel_id' => 'int',
     'check_in_date' => 'date',
+    'check_out_date' => 'date', 
     'nights' => 'int',
     'guests' => 'int',
     'rooms' => 'int',

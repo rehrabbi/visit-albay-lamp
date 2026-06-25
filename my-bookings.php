@@ -153,9 +153,9 @@ require __DIR__ . '/includes/header.php';
                 </select>
               </label>
               <label>
-                Check-in date
-                <input name="check_in_date" type="date" value="<?= h($booking['check_in_date']) ?>">
-              </label>
+                Check-in / Check-out dates
+                <input name="check_in_date" class="edit-date-picker" value="<?= h($booking['check_in_date']) ?> to <?= h($booking['check_out_date']) ?>">
+                </label>
               <label>
                 Nights
                 <input name="nights" type="number" min="1" max="30" value="<?= (int) $booking['nights'] ?>">
@@ -192,4 +192,30 @@ require __DIR__ . '/includes/header.php';
   <?php endif; ?>
 </main>
 <script src="<?= h(url('assets/js/validation.js')) ?>"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var pickers = document.querySelectorAll(".edit-date-picker");
+    pickers.forEach(function(picker) {
+      flatpickr(picker, {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        monthSelectorType: "static",
+        onChange: function(selectedDates, dateStr, instance) {
+          if (selectedDates.length === 2) {
+            var diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
+            var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            var form = instance.element.closest('form');
+            if (form) {
+              var nightsInput = form.querySelector('[name="nights"]');
+              if (nightsInput) nightsInput.value = diffDays;
+            }
+          }
+        }
+      });
+    });
+  });
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

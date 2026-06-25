@@ -59,8 +59,9 @@ require __DIR__ . '/includes/header.php';
         </label>
         <label>
           Check-in date
-          <input name="check_in_date" type="date" required>
-        </label>
+          <input name="check_in_date" id="date-picker" required placeholder="Select your dates">
+          <div id="booking-alert"><strong>Date Unavailable:</strong> This period is already booked. Please adjust your dates.</div>
+          </label>
         <label>
           Guests
           <span class="stepper">
@@ -186,6 +187,7 @@ require __DIR__ . '/includes/header.php';
     </div>
   </form>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="<?= h(url('assets/js/booking.js')) ?>?v=<?= filemtime(__DIR__ . '/assets/js/booking.js') ?>"></script>
 <script src="<?= h(url('assets/js/validation.js')) ?>?v=<?= filemtime(__DIR__ . '/assets/js/validation.js') ?>"></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

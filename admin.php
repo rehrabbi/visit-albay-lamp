@@ -11,46 +11,46 @@ $destinations = all_destinations($pdo);
 // This is required for formatting the 'diff' view in pending edit requests.
 $destinationMap = [];
 foreach ($destinations as $destination) {
-    $destinationMap[(int) $destination['id']] = $destination['name'];
+  $destinationMap[(int) $destination['id']] = $destination['name'];
 }
 
 // Create a lookup dictionary to map hotel IDs to human-readable names.
 $hotelMap = [];
 foreach ($pdo->query('SELECT id, name FROM hotels')->fetchAll() as $hotelRow) {
-    $hotelMap[(int) $hotelRow['id']] = $hotelRow['name'];
+  $hotelMap[(int) $hotelRow['id']] = $hotelRow['name'];
 }
 
 // Fetch the 50 most recent bookings with their associated owner, destination, and hotel names.
 // LIMIT 50 is enforced to prevent server memory overload and DOM lag as the database scales.
 $bookings = $pdo->query(
-    'SELECT b.*, u.username AS owner, d.name AS destination_name, h.name AS hotel_name
-     FROM bookings b
-     JOIN users u ON u.id = b.user_id
-     JOIN destinations d ON d.id = b.destination_id
-     JOIN hotels h ON h.id = b.hotel_id
-     ORDER BY b.id DESC
-     LIMIT 50'
+  'SELECT b.*, u.username AS owner, d.name AS destination_name, h.name AS hotel_name
+   FROM bookings b
+   JOIN users u ON u.id = b.user_id
+   JOIN destinations d ON d.id = b.destination_id
+   JOIN hotels h ON h.id = b.hotel_id
+   ORDER BY b.id DESC
+   LIMIT 50'
 )->fetchAll();
 
 // Fetch all pending edit requests with their original booking context.
 $editRequests = $pdo->query(
-    "SELECT e.*, b.reference_code, b.full_name, b.destination_id, b.hotel_id, b.check_in_date,
-            b.nights, b.guests, b.rooms, b.payment_method, b.email, b.phone, b.address,
-            b.special_request, u.username AS owner
-     FROM edit_requests e
-     JOIN bookings b ON b.id = e.booking_id
-     JOIN users u ON u.id = b.user_id
-     WHERE e.status = 'pending'
-     ORDER BY e.id DESC"
+  "SELECT e.*, b.reference_code, b.full_name, b.destination_id, b.hotel_id, b.check_in_date,
+          b.nights, b.guests, b.rooms, b.payment_method, b.email, b.phone, b.address,
+          b.special_request, u.username AS owner
+   FROM edit_requests e
+   JOIN bookings b ON b.id = e.booking_id
+   JOIN users u ON u.id = b.user_id
+   WHERE e.status = 'pending'
+   ORDER BY e.id DESC"
 )->fetchAll();
 
 // Aggregate user statistics, calculating total bookings per user.
 $users = $pdo->query(
-    'SELECT u.id, u.username, u.role, u.created_at, COUNT(b.id) AS bookings
-     FROM users u
-     LEFT JOIN bookings b ON b.user_id = u.id
-     GROUP BY u.id, u.username, u.role, u.created_at
-     ORDER BY u.id ASC'
+  'SELECT u.id, u.username, u.role, u.created_at, COUNT(b.id) AS bookings
+   FROM users u
+   LEFT JOIN bookings b ON b.user_id = u.id
+   GROUP BY u.id, u.username, u.role, u.created_at
+   ORDER BY u.id ASC'
 )->fetchAll();
 
 /**
@@ -59,17 +59,17 @@ $users = $pdo->query(
  */
 function admin_format_value(string $key, $value, array $destinationMap, array $hotelMap): string
 {
-    if ($value === null || $value === '') {
-        return '—';
-    }
-    if ($key === 'destination_id') {
-        return $destinationMap[(int) $value] ?? (string) $value;
-    }
-    if ($key === 'hotel_id') {
-        return $hotelMap[(int) $value] ?? (string) $value;
-    }
+  if ($value === null || $value === '') {
+    return '—';
+  }
+  if ($key === 'destination_id') {
+    return $destinationMap[(int) $value] ?? (string) $value;
+  }
+  if ($key === 'hotel_id') {
+    return $hotelMap[(int) $value] ?? (string) $value;
+  }
 
-    return (string) $value;
+  return (string) $value;
 }
 
 require __DIR__ . '/includes/header.php';
@@ -140,7 +140,9 @@ require __DIR__ . '/includes/header.php';
             </td>
             <td><?= h($booking['hotel_name']) ?></td>
             <td>
-              <input form="update-booking-<?= (int) $booking['id'] ?>" name="check_in_date" type="date" value="<?= h($booking['check_in_date']) ?>" aria-label="Check-in">
+              <!-- === NEWLY ADDED CODE START: FLATPICKR ADMIN INPUT === -->
+              <input form="update-booking-<?= (int) $booking['id'] ?>" name="check_in_date" class="admin-date-picker" value="<?= h($booking['check_in_date']) ?> to <?= h($booking['check_out_date']) ?>" aria-label="Check-in and Check-out">
+              <!-- === NEWLY ADDED CODE END === -->
               <label>
                 Guests
                 <input form="update-booking-<?= (int) $booking['id'] ?>" name="guests" type="number" min="1" max="20" value="<?= (int) $booking['guests'] ?>">
@@ -234,4 +236,16 @@ require __DIR__ . '/includes/header.php';
     </div>
   </section>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    flatpickr(".admin-date-picker", {
+      mode: "range",
+      dateFormat: "Y-m-d",
+      monthSelectorType: "static" // Keeps the clean aesthetic
+    });
+  });
+</script>
+
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -11,6 +11,27 @@ $user = current_user($pdo);
   <title><?= h($pageTitle) ?></title>
   <link rel="stylesheet" href="<?= h(url('assets/css/fonts.css')) ?>?v=<?= filemtime(__DIR__ . '/../assets/css/fonts.css') ?>">
   <link rel="stylesheet" href="<?= h(url('assets/css/styles.css')) ?>?v=<?= filemtime(__DIR__ . '/../assets/css/styles.css') ?>">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    /* Flatpickr colors */
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+        background: #FF6B6B;
+        border-color: #FF6B6B;
+    }
+    .flatpickr-day.disabled { color: #ccc !important; }
+    #booking-alert { display: none; padding: 1rem; background: #ffebeb; border: 1px solid #ff6b6b; color: #d00; margin-top: 0.5rem; border-radius: 4px; font-size: 0.9rem; }
+    
+    /*  Shrink calendar popup  */
+    .flatpickr-calendar {
+        transform: scale(0.80); 
+        transform-origin: top left; 
+        font-family: inherit;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08) !important; 
+    }
+    
+
+  </style>
   <?= $extraHead ?? '' ?>
 </head>
 <body>
