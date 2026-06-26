@@ -22,7 +22,7 @@ foreach ($destinations as $d) {
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-name">
     <div class="modal-media">
       <img id="modal-img" src="" alt="">
-      <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button>
+      <!-- <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button> -->
       <span class="modal-cat" id="modal-cat"></span>
       <div class="modal-media-text">
         <div class="modal-town" id="modal-town"></div>

@@ -8,7 +8,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 verify_csrf($_POST['csrf_token'] ?? null);
+$phone_val = trim((string) ($_POST['phone'] ?? ''));
+if ($phone_val !== '' && !preg_match('/^\+?[0-9]+$/', $phone_val)) {
+    set_flash('error', 'Phone number must contain only numbers and an optional starting +.');
+    redirect('plan.php');
+}
 
+$nights_val = (int) ($_POST['nights'] ?? 0);
+if ($nights_val > 30) {
+    set_flash('error', 'You can only book up to 30 nights.');
+    redirect('plan.php');
+}
+// Validation
+
+$errors = validate_booking($_POST, $pdo);
 $errors = validate_booking($_POST, $pdo);
 
 if ($errors) {

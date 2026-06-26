@@ -7,15 +7,12 @@ $pageTitle = 'Admin Dashboard - Visit Albay';
 $active = 'admin';
 $destinations = all_destinations($pdo);
 
-// Create a lookup dictionary to map destination IDs to human-readable names.
-// This is required for formatting the 'diff' view in pending edit requests.
+
 $destinationMap = [];
 foreach ($destinations as $destination) {
     $destinationMap[(int) $destination['id']] = $destination['name'];
 }
 
-// Create a lookup dictionary to map hotel IDs to human-readable names,
-// plus a price lookup used to project the new total on edit requests.
 $hotelMap = [];
 $hotelPriceMap = [];
 foreach ($pdo->query('SELECT id, name, price_per_night FROM hotels')->fetchAll() as $hotelRow) {
@@ -23,9 +20,7 @@ foreach ($pdo->query('SELECT id, name, price_per_night FROM hotels')->fetchAll()
     $hotelPriceMap[(int) $hotelRow['id']] = (float) $hotelRow['price_per_night'];
 }
 
-// Bookings load 50 at a time to keep memory and the DOM bounded as the database
-// scales. "Show more" raises the limit via the ?show query parameter; the value is
-// clamped to a 50-row step and never below 50.
+
 $bookingsTotal = (int) $pdo->query('SELECT COUNT(*) FROM bookings')->fetchColumn();
 $bookingsStep = 50;
 $bookingsLimit = max($bookingsStep, (int) ($_GET['show'] ?? $bookingsStep));
@@ -42,7 +37,7 @@ $bookings = $pdo->query(
 )->fetchAll();
 $bookingsHasMore = $bookingsTotal > count($bookings);
 
-// Fetch all pending edit requests with their original booking context.
+
 $editRequests = $pdo->query(
     "SELECT e.*, b.reference_code, b.full_name, b.destination_id, b.hotel_id, b.check_in_date,
             b.nights, b.guests, b.rooms, b.hotel_total, b.payment_method, b.email, b.phone, b.address,
@@ -54,7 +49,7 @@ $editRequests = $pdo->query(
      ORDER BY e.id DESC"
 )->fetchAll();
 
-// Fetch all pending cancellation requests with their booking context.
+
 $cancelRequests = $pdo->query(
     "SELECT c.*, b.reference_code, b.full_name, b.hotel_total, b.check_in_date,
             d.name AS destination_name, h.name AS hotel_name, u.username AS owner
@@ -67,7 +62,7 @@ $cancelRequests = $pdo->query(
      ORDER BY c.id DESC"
 )->fetchAll();
 
-// Aggregate user statistics, calculating total bookings per user.
+
 $users = $pdo->query(
     'SELECT u.id, u.username, u.role, u.created_at, COUNT(b.id) AS bookings
      FROM users u
@@ -76,10 +71,7 @@ $users = $pdo->query(
      ORDER BY u.id ASC'
 )->fetchAll();
 
-/**
- * Formats raw database values into human-readable strings for the Admin UI.
- * Specifically converts foreign keys (destination_id, hotel_id) into their actual text names.
- */
+
 function admin_format_value(string $key, $value, array $destinationMap, array $hotelMap): string
 {
     if ($value === null || $value === '') {
@@ -201,7 +193,7 @@ require __DIR__ . '/includes/header.php';
         <?php foreach ($editRequests as $request): ?>
           <?php
           $proposed = json_list($request['proposed']);
-          // Project the new total when the stay, nights, rooms, or check-in change.
+          
           $touchesPrice = array_key_exists('hotel_id', $proposed)
               || array_key_exists('nights', $proposed)
               || array_key_exists('rooms', $proposed)

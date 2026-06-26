@@ -34,7 +34,7 @@ require __DIR__ . '/includes/header.php';
         </label>
         <label>
           Phone
-          <input name="phone" autocomplete="tel" required>
+          <input name="phone" autocomplete="tel" pattern="^\+?[0-9]+$" title="Phone number must contain only numbers and an optional starting +" required>
         </label>
         <label>
           Address <span class="optional">(optional)</span>

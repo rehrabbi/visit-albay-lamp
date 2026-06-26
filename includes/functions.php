@@ -166,14 +166,21 @@ function peak_multiplier(PDO $pdo, string $checkIn): float
     return $season ? 1 + ((float) $season['surcharge_pct'] / 100) : 1.0;
 }
 
-// Single source of truth for a stay total: base x nights x rooms, plus any
-// peak-season surcharge tied to the check-in date.
 function compute_booking_total(PDO $pdo, float $price, int $nights, int $rooms, string $checkIn): float
 {
-    return round($price * $nights * $rooms * peak_multiplier($pdo, $checkIn), 2);
+    $total = 0.0;
+    
+    // Loop through every single night of the stay
+    for ($i = 0; $i < $nights; $i++) {
+        $currentDate = add_days($checkIn, $i);
+        $multiplier = peak_multiplier($pdo, $currentDate);
+        $total += ($price * $rooms * $multiplier);
+    }
+    
+    return round($total, 2);
 }
 
-// Peak ranges shaped for the client-side live total (booking + edit forms).
+
 function peak_seasons_for_js(PDO $pdo): array
 {
     $out = [];

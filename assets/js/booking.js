@@ -48,7 +48,7 @@
       if (!available && input.checked) input.checked = false;
     });
 
-    // List the nearest stays to the chosen destination first.
+    
     if (destinationId && stayList) {
       function distanceFor(input) {
         try { return JSON.parse(input.dataset.distances || "{}")[destinationId]; }
@@ -68,7 +68,7 @@
     updateTotal();
   }
 
-  function updateTotal() {
+function updateTotal() {
     var hotel = selectedHotel();
     if (!hotel) {
       totalBox.classList.remove("is-visible");
@@ -78,18 +78,41 @@
     var countNights = Math.max(1, numberValue(nights, 1));
     var countRooms = Math.max(1, numberValue(rooms, 1));
     var price = parseFloat(hotel.dataset.price || "0");
-    var pct = peakPct(checkIn.value);
-    var total = price * countNights * countRooms * (1 + pct / 100);
+    
+    var total = 0;
+    var hasPeak = false;
+
+    
+    if (checkIn.value) {
+      var startDateStr = checkIn.value.split(" to ")[0];
+      var startDate = new Date(startDateStr + "T00:00:00");
+      
+      for (var i = 0; i < countNights; i++) {
+        var currentDate = new Date(startDate);
+        currentDate.setDate(currentDate.getDate() + i);
+        
+        var pad = function (n) { return String(n).padStart(2, "0"); };
+        var dateStr = currentDate.getFullYear() + "-" + pad(currentDate.getMonth() + 1) + "-" + pad(currentDate.getDate());
+        
+        var pct = peakPct(dateStr);
+        if (pct > 0) hasPeak = true; 
+        
+        total += price * countRooms * (1 + pct / 100);
+      }
+    } else {
+      total = price * countNights * countRooms; 
+    }
+
     totalText.textContent = "₱" + total.toLocaleString("en-PH", { maximumFractionDigits: 0 });
     totalBox.classList.add("is-visible");
 
     if (peakNote) {
-      peakNote.textContent = pct > 0 ? "Peak season +" + pct + "% applied" : "";
-      peakNote.hidden = pct === 0;
+      peakNote.textContent = hasPeak ? "Peak season rate applied to applicable dates" : "";
+      peakNote.hidden = !hasPeak;
     }
 
     if (checkIn.value) {
-      var date = new Date(checkIn.value + "T00:00:00");
+      var date = new Date(checkIn.value.split(" to ")[0] + "T00:00:00");
       date.setDate(date.getDate() + countNights);
       var pad = function (n) { return String(n).padStart(2, "0"); };
       checkoutText.textContent = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
@@ -115,6 +138,49 @@
     target.value = Math.max(min, Math.min(max, numberValue(target, min) + delta));
     updateTotal();
   });
+
+
+
+
+  var phoneInput = form.querySelector("[name='phone']");
+  if (phoneInput) {
+    phoneInput.addEventListener("input", function () {
+      var val = this.value;
+      
+      var cleaned = val.replace(/[^\+0-9]/g, '');
+      
+      if (cleaned.indexOf('+') > 0) {
+        cleaned = cleaned.replace(/\+/g, function(match, offset) {
+          return offset === 0 ? '+' : '';
+        });
+      }
+      
+      if (val !== cleaned) {
+        this.value = cleaned;
+        this.setCustomValidity("Please input numbers and an optional starting '+' only.");
+        this.reportValidity();
+      } else {
+        this.setCustomValidity("");
+      }
+    });
+  }
+
+  if (nights) {
+    nights.addEventListener("input", function () {
+      var typedNights = parseInt(this.value, 10);
+      if (typedNights > 30) {
+        this.value = 30;
+        this.setCustomValidity("You must input 30 nights or less.");
+        this.reportValidity();
+        updateTotal();
+      } else {
+        this.setCustomValidity("");
+      }
+    });
+  }
+  // Validation 
+
+
 
   destination.addEventListener("change", updateHotels);
   checkIn.addEventListener("change", updateTotal);
